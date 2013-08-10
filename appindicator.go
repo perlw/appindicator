@@ -84,77 +84,128 @@ func (indicator *AppIndicator) C_SetMenu(menu unsafe.Pointer) {
 	C.app_indicator_set_menu(indicator.indicatorPtr, (*C.GtkMenu)(menu))
 }
 
+// Sets the default icon to use when the status is active but not set to attention. In most cases this should be the application icon for the program.
 func (indicator *AppIndicator) SetIcon(iconName, iconDescription string) {
+	iconNameString := (*C.gchar)(unsafe.Pointer(C.CString(iconName)))
+	defer C.free(unsafe.Pointer(iconNameString))
+	iconDescriptionString := (*C.gchar)(unsafe.Pointer(C.CString(iconDescription)))
+	defer C.free(unsafe.Pointer(iconDescriptionString))
 
+	C.app_indicator_set_icon_full(indicator.indicatorPtr, iconNameString, iconDescriptionString)
 }
 
+// Sets the path to use when searching for icons.
 func (indicator *AppIndicator) SetIconThemePath(iconPath string) {
+	iconPathString := (*C.gchar)(unsafe.Pointer(C.CString(iconPath)))
+	defer C.free(unsafe.Pointer(iconPathString))
 
+	C.app_indicator_set_icon_theme_path(indicator.indicatorPtr, iconPathString)
 }
 
+// Sets the label and guide of the indicator.
 func (indicator *AppIndicator) SetLabel(label, guide string) {
+	labelString := (*C.gchar)(unsafe.Pointer(C.CString(label)))
+	defer C.free(unsafe.Pointer(labelString))
+	guideString := (*C.gchar)(unsafe.Pointer(C.CString(guide)))
+	defer C.free(unsafe.Pointer(guideString))
 
+	C.app_indicator_set_label(indicator.indicatorPtr, labelString, guideString)
 }
 
+// Sets the ordering index for the indicator which affects the placement of it on the panel. For almost all app indicators this is not he function you're looking for.
 func (indicator *AppIndicator) SetOrderingIndex(index uint32) {
-
+	C.app_indicator_set_ordering_index(indicator.indicatorPtr, C.guint32(index))
 }
 
+// Sets the menu to be activated when a secondary activation event (i.e middle-click) is emitted over the indicator icon/label.
+// This is the C version of the function and should only be used it not using GoGtk.
 func (indicator *AppIndicator) C_SetSecondaryActivateTarget(menu unsafe.Pointer) {
-
+	C.app_indicator_set_secondary_activate_target(indicator.indicatorPtr, (*C.GtkWidget)(menu))
 }
 
+// Sets the title of the indicator, or how it should be referred in a human readable form.
 func (indicator *AppIndicator) SetTitle(title string) {
+	titleString := (*C.gchar)(unsafe.Pointer(C.CString(title)))
+	defer C.free(unsafe.Pointer(titleString))
 
+	C.app_indicator_set_title(indicator.indicatorPtr, titleString)
 }
 
 func (indicator AppIndicator) GetId() string {
-	return ""
+	retVal := C.app_indicator_get_id(indicator.indicatorPtr)
+	return C.GoString((*C.char)(unsafe.Pointer(retVal)))
 }
 
 func (indicator AppIndicator) GetCategory() Category {
-	return -1
+	return Category(C.app_indicator_get_category(indicator.indicatorPtr))
 }
 
 func (indicator AppIndicator) GetStatus() Status {
-	return -1
+	return Status(C.app_indicator_get_status(indicator.indicatorPtr))
 }
 
 // Gets the current icon and description that is associated with the indicator.
 func (indicator AppIndicator) GetIcon() (string, string) {
-	return "", ""
+	retVal := C.app_indicator_get_icon(indicator.indicatorPtr)
+	iconName := C.GoString((*C.char)(unsafe.Pointer(retVal)))
+
+	retVal = C.app_indicator_get_icon_desc(indicator.indicatorPtr)
+	iconDesc := C.GoString((*C.char)(unsafe.Pointer(retVal)))
+
+	return iconName, iconDesc
 }
 
 func (indicator AppIndicator) GetIconThemePath() string {
-	return ""
+	retVal := C.app_indicator_get_icon_theme_path(indicator.indicatorPtr)
+	return C.GoString((*C.char)(unsafe.Pointer(retVal)))
 }
 
 // Gets the current attention icon and description that is associated with the indicator.
 func (indicator AppIndicator) GetAttentionIcon() (string, string) {
-	return "", ""
+	retVal := C.app_indicator_get_attention_icon(indicator.indicatorPtr)
+	iconName := C.GoString((*C.char)(unsafe.Pointer(retVal)))
+
+	retVal = C.app_indicator_get_attention_icon_desc(indicator.indicatorPtr)
+	iconDesc := C.GoString((*C.char)(unsafe.Pointer(retVal)))
+
+	return iconName, iconDesc
 }
 
+// This is the C version of the function and should only be used it not using GoGtk.
 func (indicator AppIndicator) C_GetMenu() unsafe.Pointer {
-	return nil
+	return unsafe.Pointer(C.app_indicator_get_menu(indicator.indicatorPtr))
 }
 
 // Gets the current label and guide that is associated with the indicator.
 func (indicator AppIndicator) GetLabel() (string, string) {
-	return "", ""
+	retVal := C.app_indicator_get_label(indicator.indicatorPtr)
+	label := C.GoString((*C.char)(unsafe.Pointer(retVal)))
+
+	retVal = C.app_indicator_get_label_guide(indicator.indicatorPtr)
+	guide := C.GoString((*C.char)(unsafe.Pointer(retVal)))
+
+	return label, guide
 }
 
 func (indicator AppIndicator) GetOrderingIndex() uint32 {
-	return 0
+	return uint32(C.app_indicator_get_ordering_index(indicator.indicatorPtr))
 }
 
+// This is the C version of the function and should only be used it not using GoGtk.
 func (indicator AppIndicator) C_GetSecondaryActivateTarget() unsafe.Pointer {
-	return nil
+	return unsafe.Pointer(C.app_indicator_get_secondary_activate_target(indicator.indicatorPtr))
 }
 
 func (indicator AppIndicator) GetTitle() string {
-	return ""
+	retVal := C.app_indicator_get_title(indicator.indicatorPtr)
+	return C.GoString((*C.char)(unsafe.Pointer(retVal)))
 }
 
 func (indicator *AppIndicator) BuildMenuFromDesktop(filePath, profile string) {
+	filePathString := (*C.gchar)(unsafe.Pointer(C.CString(filePath)))
+	defer C.free(unsafe.Pointer(filePathString))
+	profileString := (*C.gchar)(unsafe.Pointer(C.CString(profile)))
+	defer C.free(unsafe.Pointer(profileString))
 
+	C.app_indicator_build_menu_from_desktop(indicator.indicatorPtr, filePathString, profileString)
 }
