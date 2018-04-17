@@ -6,8 +6,8 @@ package gotk3
 //#include <libappindicator/app-indicator.h>
 import "C"
 import "unsafe"
-import "github.com/conformal/gotk3/gtk"
-import "github.com/doxxan/appindicator"
+import "github.com/gotk3/gotk3/gtk"
+import "github.com/perlw/appindicator"
 
 type AppIndicatorGotk3 struct {
 	appindicator.AppIndicator
