@@ -7,7 +7,7 @@ package gotk3
 import "C"
 import "unsafe"
 import "github.com/gotk3/gotk3/gtk"
-import "github.com/doxxan/appindicator"
+import "github.com/perlw/appindicator"
 
 type AppIndicatorGotk3 struct {
 	appindicator.AppIndicator
